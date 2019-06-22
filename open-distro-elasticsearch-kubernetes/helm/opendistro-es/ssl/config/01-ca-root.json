@@ -1,0 +1,19 @@
+{
+  "CN": "Root CA",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "FR",
+      "L": "Paris",
+      "O": "TDF",
+      "OU": "Open Distro"
+    }
+  ],
+  "ca": {
+    "expiry": "262800h",
+    "pathlen": 2
+  }
+}
