@@ -1,0 +1,24 @@
+{{- $ca := genCA "opendistro-k8s-ca" 3650 }}
+{{- $cn := printf "%s-client-service" .Release.Name }}
+{{- $altName1 := printf "%s-client-service.%s" .Release.Name .Release.Namespace }}
+{{- $altName2 := printf "%s-client-service.%s.svc" .Release.Name .Release.Namespace }}
+{{- $cert := genSignedCert $cn nil (list $altName1 $altName2) 3650 $ca }}
+
+{{- if and (.Values.global.certs.autogenerate) (.Values.elasticsearch.ssl.transport.enabled) -}}
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: elasticsearch-transport-certs
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "opendistro-es.labels.standard" . | indent 4 }}
+type: tls
+data:
+  elk-transport-crt.pem: {{ b64enc $cert.Cert }}
+
+  elk-transport-key.pem: {{ b64enc $cert.Key }}
+
+  elk-transport-root-ca.pem: {{ b64enc $ca.Cert }}
+
+{{- end }}

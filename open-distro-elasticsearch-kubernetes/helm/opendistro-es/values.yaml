@@ -1,3 +1,19 @@
+global:
+  clusterName: elasticsearch
+
+  psp:
+    create: true
+
+  certs:
+    autogenerate: true
+
+  rbac:
+    enabled: true
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  # imagePullSecrets:
+  #   - myRegistryKeySecretName
+
 kibana:
   enabled: true
   image: amazon/opendistro-for-elasticsearch-kibana
@@ -24,11 +40,12 @@ kibana:
 
   ssl:
     kibana:
-      enabled: false
-      existingCertSecret:
+      enabled: true
+      existingCertSecret: kibana-certs
+    # TO REMOVE, doublon with elasticsearch.ssl.client  
     elasticsearch:
       enabled: false
-      existingCertSecret:
+      existingCertSecret: elasticsearch-rest-certs
 
 
 
@@ -53,7 +70,7 @@ kibana:
     type: ClusterIP
     annotations: {}
 
-  config: {}
+  config:
     ## Default Kibana configuration from kibana-docker.
     # server.name: kibana
     # server.host: "0"
@@ -62,11 +79,11 @@ kibana:
     # elasticsearch.hosts: ${ELASTIC_URL}
     # elasticsearch.requestTimeout: 360000
 
-    ## Kibana TLS Config
-    # server.ssl.enabled: true
-    # server.ssl.key: /usr/share/kibana/certs/kibana-key.pem
-    # server.ssl.certificate: /usr/share/kibana/certs/kibana-crt.pem
-    # elasticsearch.ssl.certificateAuthorities: /usr/share/kibana/certs/kibana-root-ca.pem
+    # Kibana TLS Config
+    server.ssl.enabled: true
+    server.ssl.key: /usr/share/kibana/certs/kibana-key.pem
+    server.ssl.certificate: /usr/share/kibana/certs/kibana-crt.pem
+    elasticsearch.ssl.certificateAuthorities: /usr/share/kibana/certs/kibana-root-ca.pem
 
     # opendistro_security.cookie.secure: true
     # opendistro_security.cookie.password: ${COOKIE_PASS}
@@ -91,21 +108,6 @@ kibana:
     # If not set and create is true, a name is generated using the fullname template
     name:
 
-
-global:
-  clusterName: elasticsearch
-
-  psp:
-    create: true
-
-  rbac:
-    enabled: true
-  ## Optionally specify an array of imagePullSecrets.
-  ## Secrets must be manually created in the namespace.
-  # imagePullSecrets:
-  #   - myRegistryKeySecretName
-
-
 elasticsearch:
 
   securityConfig:
@@ -125,14 +127,14 @@ elasticsearch:
 
   ssl:
     transport:
-      enabled: false
-      existingCertSecret:
+      enabled: true
+      existingCertSecret: elasticsearch-transport-certs
     rest:
-      enabled: false
-      existingCertSecret:
+      enabled: true
+      existingCertSecret: elasticsearch-rest-certs
     admin:
-      enabled: false
-      existingCertSecret:
+      enabled: true
+      existingCertSecret: elasticsearch-admin-certs
 
   master:
     replicas: 3
@@ -236,16 +238,18 @@ elasticsearch:
     nodeSelector: {}
 
 
-  config: {}
+  config:
     ## Example Config
-    # opendistro_security.allow_unsafe_democertificates: false
-    # opendistro_security.allow_default_init_securityindex: true
-    # opendistro_security.audit.type: internal_elasticsearch
-    # opendistro_security.enable_snapshot_restore_privilege: true
-    # opendistro_security.check_snapshot_restore_write_privileges: true
-    # cluster.routing.allocation.disk.threshold_enabled: false
-    # opendistro_security.audit.config.disabled_rest_categories: NONE
-    # opendistro_security.audit.config.disabled_transport_categories: NONE
+    opendistro_security.allow_unsafe_democertificates: false
+    opendistro_security.allow_default_init_securityindex: true
+    opendistro_security.audit.type: internal_elasticsearch
+    opendistro_security.enable_snapshot_restore_privilege: true
+    opendistro_security.check_snapshot_restore_write_privileges: true
+    cluster.routing.allocation.disk.threshold_enabled: false
+    opendistro_security.audit.config.disabled_rest_categories: NONE
+    opendistro_security.audit.config.disabled_transport_categories: NONE
+    opendistro_security.restapi.roles_enabled: ["all_access", "security_rest_api_access", "role_users"]
+
     # cluster:
     #   name: ${CLUSTER_NAME}
     # node:
@@ -275,17 +279,17 @@ elasticsearch:
     #     ping.unicast.hosts: ${DISCOVERY_SERVICE}
     #     minimum_master_nodes: ${NUMBER_OF_MASTERS}
 
-    # # TLS Configuration Transport Layer
-    # opendistro_security.ssl.transport.pemcert_filepath: elk-transport-crt.pem
-    # opendistro_security.ssl.transport.pemkey_filepath: elk-transport-key.pem
-    # opendistro_security.ssl.transport.pemtrustedcas_filepath: elk-transport-root-ca.pem
-    # opendistro_security.ssl.transport.enforce_hostname_verification: false
+    # TLS Configuration Transport Layer
+    opendistro_security.ssl.transport.pemcert_filepath: elk-transport-crt.pem
+    opendistro_security.ssl.transport.pemkey_filepath: elk-transport-key.pem
+    opendistro_security.ssl.transport.pemtrustedcas_filepath: elk-transport-root-ca.pem
+    opendistro_security.ssl.transport.enforce_hostname_verification: false
 
-    # # TLS Configuration REST Layer
-    # opendistro_security.ssl.http.enabled: true
-    # opendistro_security.ssl.http.pemcert_filepath: elk-rest-crt.pem
-    # opendistro_security.ssl.http.pemkey_filepath: elk-rest-key.pem
-    # opendistro_security.ssl.http.pemtrustedcas_filepath: elk-rest-root-ca.pem
+    # TLS Configuration REST Layer
+    opendistro_security.ssl.http.enabled: true
+    opendistro_security.ssl.http.pemcert_filepath: elk-rest-crt.pem
+    opendistro_security.ssl.http.pemkey_filepath: elk-rest-key.pem
+    opendistro_security.ssl.http.pemtrustedcas_filepath: elk-rest-root-ca.pem
 
   log4jConfig: ""
 

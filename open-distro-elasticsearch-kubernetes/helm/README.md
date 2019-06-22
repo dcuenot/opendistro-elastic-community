@@ -1,3 +1,7 @@
+Feature to automate the certificate creation, however it's not working
+Need to have a fix, about this issue: https://github.com/Masterminds/sprig/issues/168
+
+
 # Opendistro Elasticsearch
 This chart installs [Opendistro Kibana](https://opendistro.github.io/for-elasticsearch-docs/docs/kibana/) + [Opendistro Elasticsearch](https://opendistro.github.io/for-elasticsearch-docs/docs/elasticsearch/) with configurable TLS, RBAC, and more.
 Due to the uniqueness of different users environments, this chart aims to cater to a number of different use cases and setups.
