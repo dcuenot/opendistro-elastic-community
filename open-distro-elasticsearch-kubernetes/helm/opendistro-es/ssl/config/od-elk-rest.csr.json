@@ -1,0 +1,16 @@
+{
+    "CN": "Admin Open Distro",
+    "hosts": [""],
+    "key": {
+      "algo": "rsa",
+      "size": 2048
+    },
+    "names": [
+      {
+        "C": "FR",
+        "L": "Paris",
+        "O": "TDF",
+        "OU": "Open Distro"
+      }
+    ]
+}

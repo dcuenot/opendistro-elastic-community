@@ -1,1 +1,1 @@
-open-distro-elasticsearch-kubernetes/helm/opendistro-es/ssl/certificates/*
+open-distro-elasticsearch-kubernetes/helm/opendistro-es/ssl/certificates/**/*key.pem
